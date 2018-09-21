@@ -31,10 +31,6 @@ func (c *ListCommand) Run(args []string) int {
 
 	o := NewOrg(c.OrgName)
 	matchingRepos := *o.GetRepos(c.Pattern)
-
-	c.Ui.Output(fmt.Sprintf("Listing repositories for %s containing %s", c.OrgName, c.Pattern))
-	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos that contain %s", c.OrgName, len(matchingRepos), c.Pattern))
-
 	for _, repoName := range matchingRepos {
 		c.Ui.Output(fmt.Sprintf("%s", repoName))
 	}

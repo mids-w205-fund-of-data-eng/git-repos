@@ -14,28 +14,33 @@ import (
 type Org struct {
 	Name      string
 	repoNames []string
+	ctx       context.Context
+	client    *github.Client
 }
 
 func NewOrg(orgName string) *Org {
-	return &Org{orgName, []string{}}
-}
-
-func (o *Org) GetRepos(pattern string) *[]string {
 
 	ctx := context.Background()
+
 	token := os.Getenv("GITHUB_AUTH_TOKEN")
 	if token == "" {
 		log.Fatal("Unauthorized: No token")
 	}
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
+
 	client := github.NewClient(tc)
 
-	opt := &github.RepositoryListByOrgOptions{
+	return &Org{orgName, []string{}, ctx, client}
+}
+
+func (o *Org) GetRepos(pattern string) *[]string {
+
+	options := &github.RepositoryListByOrgOptions{
 		Type:        "private",
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
-	repos, _, err := client.Repositories.ListByOrg(ctx, o.Name, opt)
+	repos, _, err := o.client.Repositories.ListByOrg(o.ctx, o.Name, options)
 	if err != nil {
 		log.Fatal(err)
 	}
