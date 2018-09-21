@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -42,7 +43,10 @@ func (o *Org) GetRepos(pattern string) *[]string {
 
 	fmt.Println(len(repos))
 	for _, repo := range repos {
-		o.repoNames = append(o.repoNames, repo.GetName())
+		repoName := repo.GetName()
+		if strings.Contains(repoName, pattern) {
+			o.repoNames = append(o.repoNames, repoName)
+		}
 	}
 
 	return &o.repoNames

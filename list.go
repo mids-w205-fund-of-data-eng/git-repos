@@ -11,6 +11,7 @@ import (
 
 type ListCommand struct {
 	OrgName string
+	Pattern string
 	Ui      cli.Ui
 }
 
@@ -20,6 +21,7 @@ func (c *ListCommand) Run(args []string) int {
 	cmdFlags.Usage = func() { c.Ui.Output(c.Help()) }
 
 	cmdFlags.StringVar(&c.OrgName, "org-name", "", "The github org to list")
+	cmdFlags.StringVar(&c.Pattern, "pattern", "", "List repos matching this pattern")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
 	}
@@ -29,9 +31,15 @@ func (c *ListCommand) Run(args []string) int {
 	}
 
 	o := NewOrg(c.OrgName)
+	matchingRepos := *o.GetRepos(c.Pattern)
 
-	c.Ui.Output(fmt.Sprintf("Would list repositories for the org: %s", c.OrgName))
-	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos", c.OrgName, len(*o.GetRepos(""))))
+	c.Ui.Output(fmt.Sprintf("Would list repositories for the org: %s matching pattern: %s", c.OrgName, c.Pattern))
+	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos that contain %s", c.OrgName, len(matchingRepos), c.Pattern))
+
+	for _, repoName := range matchingRepos {
+		c.Ui.Output(fmt.Sprintf("%s", repoName))
+	}
+
 	return 0
 }
 
