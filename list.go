@@ -2,15 +2,11 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/google/go-github/github"
 	"github.com/mitchellh/cli"
-	"golang.org/x/oauth2"
 )
 
 type ListCommand struct {
@@ -32,26 +28,11 @@ func (c *ListCommand) Run(args []string) int {
 		log.Fatal("need to add an org to list")
 	}
 
-	ctx := context.Background()
-	token := os.Getenv("GITHUB_AUTH_TOKEN")
-	if token == "" {
-		log.Fatal("Unauthorized: No token")
-	}
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-
-	opt := &github.RepositoryListByOrgOptions{
-		Type:        "private",
-		ListOptions: github.ListOptions{PerPage: 100},
-	}
-	repos, _, err := client.Repositories.ListByOrg(ctx, c.OrgName, opt)
-	if err != nil {
-		log.Fatal(err)
-	}
+	var org Org
+	o := org.NewOrg(c.OrgName)
 
 	c.Ui.Output(fmt.Sprintf("Would list repositories for the org: %s", c.OrgName))
-	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos", c.OrgName, len(repos)))
+	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos", c.OrgName, len(*o.GetRepos(""))))
 	return 0
 }
 
