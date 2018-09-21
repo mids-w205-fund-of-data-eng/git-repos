@@ -1,38 +1,44 @@
 package main
 
 import (
-	"context"
-	"flag"
-	"fmt"
 	"log"
 	"os"
 
-	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
-)
-
-var (
-	org = flag.String("org", "", "Github org")
+	"github.com/mitchellh/cli"
 )
 
 func main() {
-	flag.Parse()
-	token := os.Getenv("GITHUB_AUTH_TOKEN")
-	if token == "" {
-		log.Fatal("Unauthorized: No token")
-	}
-	if *org == "" {
-		log.Fatal("need to add an org to list")
-	}
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
 
-	opt := &github.RepositoryListByOrgOptions{Type: "private"}
-	repos, _, err := client.Repositories.ListByOrg(ctx, *org, opt)
-	if err != nil {
-		log.Fatal(err)
+	ui := &cli.BasicUi{
+		Reader:      os.Stdin,
+		Writer:      os.Stdout,
+		ErrorWriter: os.Stderr,
 	}
-	fmt.Println(len(repos))
+	c := cli.NewCLI("git-org", "0.0.1")
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"list": func() (cli.Command, error) {
+			return &ListCommand{
+				Ui: &cli.ColoredUi{
+					Ui:          ui,
+					OutputColor: cli.UiColorGreen,
+				},
+			}, nil
+		},
+		"flush": func() (cli.Command, error) {
+			return &FlushCommand{
+				Ui: &cli.ColoredUi{
+					Ui:          ui,
+					OutputColor: cli.UiColorGreen,
+				},
+			}, nil
+		},
+	}
+
+	exitStatus, err := c.Run()
+	if err != nil {
+		log.Println(err)
+	}
+
+	os.Exit(exitStatus)
 }
