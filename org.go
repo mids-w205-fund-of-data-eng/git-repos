@@ -16,7 +16,7 @@ type Org struct {
 	repoNames []string
 }
 
-func (o *Org) NewOrg(orgName string) *Org {
+func NewOrg(orgName string) *Org {
 	return &Org{orgName, []string{}}
 }
 

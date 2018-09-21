@@ -28,8 +28,7 @@ func (c *ListCommand) Run(args []string) int {
 		log.Fatal("need to add an org to list")
 	}
 
-	var org Org
-	o := org.NewOrg(c.OrgName)
+	o := NewOrg(c.OrgName)
 
 	c.Ui.Output(fmt.Sprintf("Would list repositories for the org: %s", c.OrgName))
 	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos", c.OrgName, len(*o.GetRepos(""))))
