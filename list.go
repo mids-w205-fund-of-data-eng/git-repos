@@ -19,7 +19,6 @@ func (c *ListCommand) Run(args []string) int {
 
 	cmdFlags := flag.NewFlagSet("list", flag.ContinueOnError)
 	cmdFlags.Usage = func() { c.Ui.Output(c.Help()) }
-
 	cmdFlags.StringVar(&c.OrgName, "org-name", "", "The github org to list")
 	cmdFlags.StringVar(&c.Pattern, "pattern", "", "List repos matching this pattern")
 	if err := cmdFlags.Parse(args); err != nil {
@@ -33,7 +32,7 @@ func (c *ListCommand) Run(args []string) int {
 	o := NewOrg(c.OrgName)
 	matchingRepos := *o.GetRepos(c.Pattern)
 
-	c.Ui.Output(fmt.Sprintf("Would list repositories for the org: %s matching pattern: %s", c.OrgName, c.Pattern))
+	c.Ui.Output(fmt.Sprintf("Listing repositories for %s containing %s", c.OrgName, c.Pattern))
 	c.Ui.Output(fmt.Sprintf("the org: %s has %d repos that contain %s", c.OrgName, len(matchingRepos), c.Pattern))
 
 	for _, repoName := range matchingRepos {

@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -41,7 +40,6 @@ func (o *Org) GetRepos(pattern string) *[]string {
 		log.Fatal(err)
 	}
 
-	fmt.Println(len(repos))
 	for _, repo := range repos {
 		repoName := repo.GetName()
 		if strings.Contains(repoName, pattern) {
@@ -50,8 +48,4 @@ func (o *Org) GetRepos(pattern string) *[]string {
 	}
 
 	return &o.repoNames
-}
-
-func (c *Org) Help() string {
-	return "List org repos (detailed help information here)"
 }
