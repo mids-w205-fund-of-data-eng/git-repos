@@ -34,7 +34,7 @@ func NewOrg(orgName string) *Org {
 	return &Org{orgName, []string{}, ctx, client}
 }
 
-func (o *Org) GetRepos(pattern string) *[]string {
+func (o *Org) GetRepos(pattern string) []string {
 
 	options := &github.RepositoryListByOrgOptions{
 		Type:        "private",
@@ -52,5 +52,5 @@ func (o *Org) GetRepos(pattern string) *[]string {
 		}
 	}
 
-	return &o.repoNames
+	return o.repoNames
 }

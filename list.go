@@ -30,7 +30,7 @@ func (c *ListCommand) Run(args []string) int {
 	}
 
 	o := NewOrg(c.OrgName)
-	matchingRepos := *o.GetRepos(c.Pattern)
+	matchingRepos := o.GetRepos(c.Pattern)
 	for _, repoName := range matchingRepos {
 		c.Ui.Output(fmt.Sprintf("%s", repoName))
 	}
