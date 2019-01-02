@@ -47,7 +47,7 @@ func (c *ListCommand) Run(args []string) int {
 
 func (c *ListCommand) Help() string {
 	helpText := `
-Usage: git-repos list --org-name=<org_name> [<pattern>]
+Usage: git repos list --org-name=<org_name> [<pattern>]
 	Parameters:
 	'<org_name>': The working GitHub Organization.  Default to the GITHUB_ORG environment variable.
 	'<pattern>': An optional string to match repo names.

@@ -64,7 +64,7 @@ func (c *FlushCommand) Run(args []string) int {
 
 func (c *FlushCommand) Help() string {
 	helpText := `
-Usage: git-repos flush --org-name=<org_name> --confirm <pattern>
+Usage: git repos flush --org-name=<org_name> --confirm <pattern>
 	Parameters:
 	'<org_name>': The working GitHub Organization.  Default to the GITHUB_ORG environment variable
 	'confirm': Confirm repo deletion
