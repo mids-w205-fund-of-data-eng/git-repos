@@ -14,7 +14,7 @@ func main() {
 		Writer:      os.Stdout,
 		ErrorWriter: os.Stderr,
 	}
-	c := cli.NewCLI("git-org", "0.0.1")
+	c := cli.NewCLI("git-org", "0.0.3")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"list": func() (cli.Command, error) {

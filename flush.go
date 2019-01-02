@@ -4,7 +4,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"os"
+	"strings"
 
 	"github.com/mitchellh/cli"
 )
@@ -20,19 +21,27 @@ func (c *FlushCommand) Run(args []string) int {
 
 	cmdFlags := flag.NewFlagSet("flush", flag.ContinueOnError)
 	cmdFlags.Usage = func() { c.Ui.Output(c.Help()) }
-	cmdFlags.StringVar(&c.OrgName, "org-name", "", "GitHub Org")
-	cmdFlags.StringVar(&c.Pattern, "pattern", "", "Flush repos matching this pattern")
+	cmdFlags.StringVar(&c.OrgName, "org-name", os.Getenv("GITHUB_ORG"), "The working GitHub Org")
 	cmdFlags.BoolVar(&c.Confirmed, "confirm", false, "Really delete?")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
 	}
 
+	cmdArgs := cmdFlags.Args()
+	if len(cmdArgs) >= 1 {
+		c.Pattern = cmdArgs[0]
+	}
+
 	if c.OrgName == "" {
-		log.Fatal("Please specify a GitHub Org")
+		c.Ui.Output(fmt.Sprint("Error: no GitHub Org"))
+		cmdFlags.Usage()
+		return 1
 	}
 
 	if c.Pattern == "" {
-		log.Fatal("Please specify a pattern.  Not going to delete all repos in the org")
+		c.Ui.Output(fmt.Sprint("Error: no filter pattern (not going to delete all org repos)"))
+		cmdFlags.Usage()
+		return 1
 	}
 
 	if c.Confirmed {
@@ -54,7 +63,14 @@ func (c *FlushCommand) Run(args []string) int {
 }
 
 func (c *FlushCommand) Help() string {
-	return "flush org repos (detailed help information here)"
+	helpText := `
+Usage: git-repos flush --org-name=<org_name> --confirm <pattern>
+	Parameters:
+	'<org_name>': The working GitHub Organization.  Default to the GITHUB_ORG environment variable
+	'confirm': Confirm repo deletion
+	'<pattern>': A string to match repo names
+	`
+	return strings.TrimSpace(helpText)
 }
 
 func (c *FlushCommand) Synopsis() string {

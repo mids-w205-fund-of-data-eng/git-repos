@@ -67,8 +67,8 @@ func TestOrg_DeleteRepoByPattern(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//err = o.DeleteReposByPattern("somepattern-*")
-	//if err != nil {
-	//t.Fatal(err)
-	//}
+	err = o.DeleteReposByPattern("somepattern-*")
+	if err != nil {
+		t.Fatal(err)
+	}
 }

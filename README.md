@@ -1,25 +1,35 @@
+# `git-repos`
 
+Manage org repos in bulk.
+
+
+## Usage
 
 Use this as
 
-    git org <command>
+    git repos <subcommand>
 
-where `command` may be
+where `subcommand` may be
 
     list | flush
 
-and
+with the following structure
 
-    git org list --org-name <org> --pattern <pattern>
+    git repos list --org-name <org> <pattern>
+    git repos flush --org-name <org> --confirm <pattern>
 
 
----
+Note, The working org can either be specified from the `--org-name` option or
+the `GITHUB_ORG` environment variable...
 
-no clue what to do with this... which is more idiomatic?
+    GITHUB_ORG=mids-w205-martin-mims git repos list "*assignment-01*"
 
-    git org list --org-name <org> --pattern <pattern>
-    git org list-repos --org-name <org> --pattern <pattern>
-    git org list-repos <org> --pattern <pattern>
-    git org repos list --org-name <org> --pattern <pattern>
-    git org <org> repos list --pattern <pattern>
+or even simply 
+
+    GITHUB_ORG=mids-w205-martin-mims git repos list assignment-01
+
+and then
+
+    GITHUB_ORG=mids-w205-martin-mims git repos flush assignment-01
+    GITHUB_ORG=mids-w205-martin-mims git repos flush --confirm assignment-01
 

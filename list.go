@@ -4,7 +4,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"os"
+	"strings"
 
 	"github.com/mitchellh/cli"
 )
@@ -19,14 +20,20 @@ func (c *ListCommand) Run(args []string) int {
 
 	cmdFlags := flag.NewFlagSet("list", flag.ContinueOnError)
 	cmdFlags.Usage = func() { c.Ui.Output(c.Help()) }
-	cmdFlags.StringVar(&c.OrgName, "org-name", "", "The github org to list")
-	cmdFlags.StringVar(&c.Pattern, "pattern", "", "List repos matching this pattern")
+	cmdFlags.StringVar(&c.OrgName, "org-name", os.Getenv("GITHUB_ORG"), "The working GitHub Org")
 	if err := cmdFlags.Parse(args); err != nil {
 		return 1
 	}
 
+	cmdArgs := cmdFlags.Args()
+	if len(cmdArgs) >= 1 {
+		c.Pattern = cmdArgs[0]
+	}
+
 	if c.OrgName == "" {
-		log.Fatal("need to add an org to list")
+		c.Ui.Output(fmt.Sprint("Error: no GitHub Org"))
+		cmdFlags.Usage()
+		return 1
 	}
 
 	o := NewOrg(c.OrgName)
@@ -39,7 +46,13 @@ func (c *ListCommand) Run(args []string) int {
 }
 
 func (c *ListCommand) Help() string {
-	return "List org repos (detailed help information here)"
+	helpText := `
+Usage: git-repos list --org-name=<org_name> [<pattern>]
+	Parameters:
+	'<org_name>': The working GitHub Organization.  Default to the GITHUB_ORG environment variable.
+	'<pattern>': An optional string to match repo names.
+	`
+	return strings.TrimSpace(helpText)
 }
 
 func (c *ListCommand) Synopsis() string {
