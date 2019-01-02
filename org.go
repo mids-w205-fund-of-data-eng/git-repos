@@ -54,3 +54,36 @@ func (o *Org) GetRepos(pattern string) []string {
 
 	return o.repoNames
 }
+
+func (o *Org) CreateRepo(name string) (*github.Repository, error) {
+	repo := &github.Repository{
+		Name:    github.String(name),
+		Private: github.Bool(true),
+	}
+	repo, _, err := o.client.Repositories.Create(o.ctx, o.Name, repo)
+	if err != nil {
+		log.Fatalf("Error %s", err)
+	}
+	return repo, err
+}
+
+func (o *Org) DeleteRepoByName(repoName string) error {
+	_, err := o.client.Repositories.Delete(o.ctx, o.Name, repoName)
+	if err != nil {
+		log.Fatalf("Error %s", err)
+	}
+	return err
+}
+
+func (o *Org) DeleteReposByPattern(pattern string) error {
+	log.Printf("deleting repos matching pattern: %s", pattern)
+	repos := o.GetRepos(pattern)
+	for _, repoName := range repos {
+		log.Printf("removing repo %s", repoName)
+		err := o.DeleteRepoByName(repoName)
+		if err != nil {
+			log.Printf("Error deleting repo %s: %s", repoName, err)
+		}
+	}
+	return nil
+}
