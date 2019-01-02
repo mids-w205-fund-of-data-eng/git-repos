@@ -5,7 +5,7 @@ import (
 	"context"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -34,7 +34,7 @@ func NewOrg(orgName string) *Org {
 	return &Org{orgName, []string{}, ctx, client}
 }
 
-func (o *Org) GetRepos(pattern string) []string {
+func (o *Org) GetReposMatching(pattern string) []string {
 
 	options := &github.RepositoryListByOrgOptions{
 		Type:        "private",
@@ -47,7 +47,8 @@ func (o *Org) GetRepos(pattern string) []string {
 
 	for _, repo := range repos {
 		repoName := repo.GetName()
-		if strings.Contains(repoName, pattern) {
+		matched, err := regexp.MatchString(pattern, repoName)
+		if err == nil && matched {
 			o.repoNames = append(o.repoNames, repoName)
 		}
 	}
@@ -77,7 +78,7 @@ func (o *Org) DeleteRepoByName(repoName string) error {
 
 func (o *Org) DeleteReposByPattern(pattern string) error {
 	log.Printf("deleting repos matching pattern: %s", pattern)
-	repos := o.GetRepos(pattern)
+	repos := o.GetReposMatching(pattern)
 	for _, repoName := range repos {
 		log.Printf("removing repo %s", repoName)
 		err := o.DeleteRepoByName(repoName)
