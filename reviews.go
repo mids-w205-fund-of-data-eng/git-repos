@@ -45,6 +45,8 @@ func (c *ReviewsCommand) Run(args []string) int {
 	for _, repoName := range matchingRepos {
 		r := NewRepo(c.OrgName, repoName)
 		c.Ui.Output(fmt.Sprintf("%s: %d", repoName, r.Grade()))
+		// strictly speaking, "reviews" should return c.Ui.Output(fmt.Sprintf("%s: %s", repoName, r.ApprovedReviewBody()))
+		// and r.Grade() should be part of a "grades" subcommand
 	}
 
 	return 0
