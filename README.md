@@ -33,3 +33,9 @@ and then
     GITHUB_ORG=mids-w205-martin-mims git repos flush assignment-01
     GITHUB_ORG=mids-w205-martin-mims git repos flush --confirm assignment-01
 
+
+---
+
+## Reviews
+
+    git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
