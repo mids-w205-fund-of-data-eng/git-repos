@@ -2,36 +2,26 @@
 package main
 
 import (
-	"context"
 	"log"
-	"os"
 	"regexp"
 
 	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
 )
 
 type Org struct {
-	Name      string
+	Name string
+
+	gh        *GithubConnection
 	repoNames []string
-	ctx       context.Context
-	client    *github.Client
 }
 
 func NewOrg(orgName string) *Org {
-
-	ctx := context.Background()
-
-	token := os.Getenv("GITHUB_AUTH_TOKEN")
-	if token == "" {
-		log.Fatal("Unauthorized: No token")
+	gh, err := NewGithubConnection()
+	if err != nil {
+		log.Fatalf("GithubConnection: %s", err)
 	}
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	tc := oauth2.NewClient(ctx, ts)
 
-	client := github.NewClient(tc)
-
-	return &Org{orgName, []string{}, ctx, client}
+	return &Org{orgName, gh, []string{}}
 }
 
 func (o *Org) GetReposMatching(pattern string) []string {
@@ -40,7 +30,7 @@ func (o *Org) GetReposMatching(pattern string) []string {
 		Type:        "private",
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
-	repos, _, err := o.client.Repositories.ListByOrg(o.ctx, o.Name, options)
+	repos, _, err := o.gh.Client.Repositories.ListByOrg(o.gh.Context, o.Name, options)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,7 +51,7 @@ func (o *Org) CreateRepo(name string) (*github.Repository, error) {
 		Name:    github.String(name),
 		Private: github.Bool(true),
 	}
-	repo, _, err := o.client.Repositories.Create(o.ctx, o.Name, repo)
+	repo, _, err := o.gh.Client.Repositories.Create(o.gh.Context, o.Name, repo)
 	if err != nil {
 		log.Fatalf("Error %s", err)
 	}
@@ -69,7 +59,7 @@ func (o *Org) CreateRepo(name string) (*github.Repository, error) {
 }
 
 func (o *Org) DeleteRepoByName(repoName string) error {
-	_, err := o.client.Repositories.Delete(o.ctx, o.Name, repoName)
+	_, err := o.gh.Client.Repositories.Delete(o.gh.Context, o.Name, repoName)
 	if err != nil {
 		log.Fatalf("Error %s", err)
 	}
