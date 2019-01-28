@@ -33,6 +33,14 @@ func main() {
 				},
 			}, nil
 		},
+		"reviews": func() (cli.Command, error) {
+			return &ReviewsCommand{
+				Ui: &cli.ColoredUi{
+					Ui:          ui,
+					OutputColor: cli.UiColorGreen,
+				},
+			}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()

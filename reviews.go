@@ -43,7 +43,8 @@ func (c *ReviewsCommand) Run(args []string) int {
 	o := NewOrg(c.OrgName)
 	matchingRepos := o.GetReposMatching(c.Pattern)
 	for _, repoName := range matchingRepos {
-		c.Ui.Output(fmt.Sprintf("%s", repoName))
+		r := NewRepo(c.OrgName, repoName)
+		c.Ui.Output(fmt.Sprintf("%s: %d", repoName, r.Grade()))
 	}
 
 	return 0
