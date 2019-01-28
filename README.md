@@ -39,3 +39,7 @@ and then
 ## Reviews
 
     git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
+
+for example,
+
+    git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm --state=APPROVED assignment-01
