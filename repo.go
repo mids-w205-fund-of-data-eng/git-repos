@@ -51,10 +51,25 @@ func (r *Repo) trimSpaces(review string) string {
 	return strings.Join(strings.Fields(review), " ")
 }
 
+func (r *Repo) reviewIsGrade(review *github.PullRequestReview) bool {
+	graders := map[string]struct{}{
+		"mmm":      {},
+		"htmartin": {},
+	}
+	if *review.State == "APPROVED" {
+		if review.User != nil {
+			if _, here := graders[*review.User.Login]; here == true {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (r *Repo) ApprovedReviewBody() string {
 	for _, pull := range r.closedPRs() {
 		for _, review := range r.reviews(*pull.Number) {
-			if review.User != nil && *review.User.Login == "mmm" && *review.State == "APPROVED" {
+			if r.reviewIsGrade(review) {
 				return r.trimSpaces(*review.Body)
 			}
 		}
