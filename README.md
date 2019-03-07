@@ -1,6 +1,7 @@
 # `git-repos`
 
-Manage org repos in bulk.
+git `repos` subcommand to help with grading github-classroom assignments and
+managing org repos in bulk between semesters.
 
 
 ## Usage
@@ -15,6 +16,7 @@ with the following structure
 
     git repos list --org-name <org> <pattern>
     git repos flush --org-name <org> --confirm <pattern>
+    git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
 
 
 Note, The working org can either be specified from the `--org-name` option or
@@ -36,8 +38,27 @@ and then
 
 ## Reviews
 
-    git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
+GitHub Classroom assignments each have a separate private repo per student assignment.
+I.e., each student has a separate private repo per assignment.  Only the student
+and the org owner (instructor) can read/write to each assignment repo.
 
-for example,
+In our classes:
+- students submit assignments for grading by creating a pull request with the
+  graders/instructors added as reviewers
+- assignments are graded as reviews of these PRs, with the actual grade for the
+  assignment recorded in the accompanying review comment
+
+This tool is useful in tracking:
+
+- which students have accepted an assignment
+
+    git repos list --org-name mids-w205-martin-mims assignment-01
+
+- which student assignments have been submitted for grading
+
+    git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm assignment-01
+
+- which student assignments have been graded
+- the grades for each student assignment
 
     git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm --state=APPROVED assignment-01
