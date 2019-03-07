@@ -18,6 +18,14 @@ with the following structure
     git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
 
 
+## Auth
+
+Your github api token needs to be available via an environment variable
+
+    export GITHUB_AUTH_TOKEN=abcd1234abcd1234abcd1234abcd1234
+
+I stick the above line in a `.envrc` file and use
+[direnv](https://direnv.net/).
 
 ## Options
 
