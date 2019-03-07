@@ -29,7 +29,7 @@ func NewRepo(orgName, repoName string) *Repo {
 func (r *Repo) closedPRs() []*github.PullRequest {
 	options := &github.PullRequestListOptions{
 		State:       "closed",
-		ListOptions: github.ListOptions{PerPage: 100},
+		ListOptions: github.ListOptions{PerPage: 10},
 	}
 	pulls, _, err := r.gh.Client.PullRequests.List(r.gh.Context, r.OrgName, r.Name, options)
 	if err != nil {
@@ -39,7 +39,7 @@ func (r *Repo) closedPRs() []*github.PullRequest {
 }
 
 func (r *Repo) reviews(pr int) []*github.PullRequestReview {
-	options := &github.ListOptions{PerPage: 100}
+	options := &github.ListOptions{PerPage: 10}
 	reviews, _, err := r.gh.Client.PullRequests.ListReviews(r.gh.Context, r.OrgName, r.Name, pr, options)
 	if err != nil {
 		log.Fatal(err)

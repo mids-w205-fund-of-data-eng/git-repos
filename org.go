@@ -30,10 +30,22 @@ func (o *Org) GetReposMatching(pattern string) []string {
 		Type:        "private",
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
-	repos, _, err := o.gh.Client.Repositories.ListByOrg(o.gh.Context, o.Name, options)
-	if err != nil {
-		log.Fatal(err)
+
+	var repos []*github.Repository
+	for {
+		page_of_repos, resp, err := o.gh.Client.Repositories.ListByOrg(o.gh.Context, o.Name, options)
+		if err != nil {
+			log.Fatal(err)
+		}
+		//log.Print("got a page of repos")
+		repos = append(repos, page_of_repos...)
+		if resp.NextPage == 0 {
+			break
+		}
+		options.Page = resp.NextPage
 	}
+
+	//log.Printf("got %d repos", len(repos))
 
 	for _, repo := range repos {
 		repoName := repo.GetName()
