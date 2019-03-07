@@ -9,9 +9,7 @@ Use this as
 
     git repos <subcommand>
 
-where `subcommand` may be
-
-    list | flush
+where `subcommand` may be `list`, `reviews`, or `flush`.
 
 with the following structure
 
