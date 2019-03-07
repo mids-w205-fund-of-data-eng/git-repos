@@ -10,14 +10,16 @@ Use this as
 
     git repos <subcommand>
 
-where `subcommand` may be `list`, `reviews`, or `flush`.
+where `subcommand` may be `list` or `reviews`.
 
 with the following structure
 
     git repos list --org-name <org> <pattern>
-    git repos flush --org-name <org> --confirm <pattern>
     git repos reviews --org-name <org> --reviewer <reviewer> --state <review_state> <repo_name_pattern>
 
+
+
+## Options
 
 Note, The working org can either be specified from the `--org-name` option or
 the `GITHUB_ORG` environment variable...
@@ -28,13 +30,6 @@ or even simply
 
     GITHUB_ORG=mids-w205-martin-mims git repos list assignment-01
 
-and then
-
-    GITHUB_ORG=mids-w205-martin-mims git repos flush assignment-01
-    GITHUB_ORG=mids-w205-martin-mims git repos flush --confirm assignment-01
-
-
----
 
 ## Reviews
 
@@ -62,3 +57,26 @@ This tool is useful in tracking:
 - the grades for each student assignment
 
     git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm --state=APPROVED assignment-01
+
+Additionally, this can be used by students to check grades
+
+    git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm --state=APPROVED <student-gh-id>
+
+---
+
+## Flush
+
+Be careful here please!
+
+Between semesters, we clean out instructor orgs.  In addition to the grading
+subcommands listed above, this tool also provides a `flush` subcommand used to
+delete student assignment repos by pattern:
+
+    # Be careful here please!
+    git repos flush --org-name <org> <pattern>
+
+or really,
+
+    git repos flush --org-name <org> --confirm <pattern>
+
+Again, be careful!
