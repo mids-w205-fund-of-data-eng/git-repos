@@ -45,16 +45,16 @@ In our classes:
 
 This tool is useful in tracking:
 
-- which students have accepted an assignment
+which students have accepted an assignment
 
     git repos list --org-name mids-w205-martin-mims assignment-01
 
-- which student assignments have been submitted for grading
+which student assignments have been submitted for grading
 
     git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm assignment-01
 
-- which student assignments have been graded
-- the grades for each student assignment
+which student assignments have been graded and
+the grades for each student assignment
 
     git repos reviews --org-name mids-w205-martin-mims --reviewer=mmm --state=APPROVED assignment-01
 
